@@ -1,65 +1,29 @@
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments.of
+import org.junit.jupiter.params.provider.MethodSource
 
 internal class ParityOutlierTest {
-
-    @Test
-    internal fun testFirstOdd() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(1, 2, 4, 6, 8, 10))
-        assertEquals(1, result)
+    companion object {
+        @JvmStatic
+        fun positiveTests() = listOf(
+            of(arrayOf(2, 1, 3, 5, 7), 2),
+            of(arrayOf(1, 2, 4, 6, 8, 10), 1),
+            of(arrayOf(-2, -1, -3, -5, -7), -2),
+            of(arrayOf(1, -1, 2, 3, -3), 2),
+            of(arrayOf(Int.MAX_VALUE, 0, 1), 0),
+            of(arrayOf(Int.MIN_VALUE, 0, 1), 1),
+        )
     }
 
-    @Test
-    internal fun testFirstEven() {
+    @ParameterizedTest
+    @MethodSource("positiveTests")
+    internal fun positiveTest(input: Array<Int>, output: Int) {
         val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(2, 1, 3, 5, 7))
-        assertEquals(2, result)
+        val result = parityOutlier.find(input)
+        assertEquals(output, result)
     }
-
-    @Test
-    internal fun testAllNegative() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(-2, -1, -3, -5, -7))
-        assertEquals(-2, result)
-    }
-
-    @Test
-    internal fun testNegativeAndPositive() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(1, -1, 2, 3, -3))
-        assertEquals(2, result)
-    }
-
-    @Test
-    internal fun testAllEven() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(0, 0, 0))
-        assertEquals(null, result)
-    }
-
-    @Test
-    internal fun testAllOdd() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(-1, 1, -1))
-        assertEquals(null, result)
-    }
-
-    @Test
-    internal fun testMaxInteger() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(Int.MAX_VALUE, 0, 1))
-        assertEquals(0, result)
-    }
-
-
-    @Test
-    internal fun testMinInteger() {
-        val parityOutlier = ParityOutlier()
-        val result = parityOutlier.find(arrayOf(Int.MIN_VALUE, 0, 1))
-        assertEquals(1, result)
-    }
-
 
     @Test
     internal fun testMaxAndMinInteger() {
@@ -72,7 +36,6 @@ internal class ParityOutlierTest {
         )
     }
 
-
     @Test
     internal fun testLongArray() {
         val input = Array(1000) { 100 }
@@ -82,6 +45,19 @@ internal class ParityOutlierTest {
         assertEquals(123, result)
     }
 
+    @Test
+    internal fun testAllEven() {
+        val parityOutlier = ParityOutlier()
+        val result = parityOutlier.find(arrayOf(0, 0, 0))
+        assertNull(result)
+    }
+
+    @Test
+    internal fun testAllOdd() {
+        val parityOutlier = ParityOutlier()
+        val result = parityOutlier.find(arrayOf(-1, 1, -1))
+        assertNull(result)
+    }
 
     @Test
     internal fun testShortArray() {
@@ -98,6 +74,5 @@ internal class ParityOutlierTest {
             parityOutlier.find(arrayOf())
         }
     }
-
 
 }
